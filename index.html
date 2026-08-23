@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=5">
+<title>AS READER</title>
+<meta name="description" content="Convierte cada página en progreso, XP, logros y seasons compartidas.">
+<meta name="theme-color" content="#090b12">
+<meta name="color-scheme" content="dark">
+
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AS READER">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://derzetuipyugmrjaxcyu.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..1000&family=Geist+Mono:wght@400..900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<!-- Puerta de entrada: perfil + PIN (compartido con AS HUB) -->
+<div id="gate" class="gate hide">
+  <div class="gateCard">
+    <div class="gateBrand">
+      <span class="brandBubble">AS!</span>
+      <div><b>AS READER</b><i>acceso</i></div>
+    </div>
+    <div id="gateBox" class="gateBox"></div>
+  </div>
+</div>
+
+<div id="shell" class="hide">
+  <header class="topbar">
+    <div class="wrap">
+      <span class="brand">
+        <span class="brandBubble">R</span>
+        <span class="brandWords"><b>AS READER</b><i>tracker</i></span>
+      </span>
+
+      <div class="row">
+        <span class="pill" id="syncPill"><i></i><span id="syncText">SYNC</span></span>
+        <button class="whoBtn" id="btnWho" type="button" aria-label="Sesión">
+          <span id="whoEmoji">👤</span><b id="whoName">—</b>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="wrap"></main>
+</div>
+
+<script type="module" src="/js/app.js"></script>
+<noscript><p style="padding:24px;font-family:monospace">AS READER necesita JavaScript activado.</p></noscript>
+</body>
+</html>
