@@ -41,14 +41,28 @@ function distinctDates(logs) {
   return [...new Set(logs.map((l) => l.logged_date))].sort().reverse();
 }
 
+/* Racha con penalización progresiva: un día fallado resta 1; si el fallo se
+   repite en días consecutivos la resta se duplica (1, 2, 4, 8...) en vez de
+   reiniciar todo a cero. El día de hoy, si aún no hay lectura, no penaliza
+   todavía (el día no ha terminado). */
 function computeStreak(logs, today) {
-  const dates = distinctDates(logs);
-  if (!dates.length) return 0;
-  if (dates[0] !== today && dates[0] !== addDays(today, -1)) return 0;
-  let streak = 1;
-  let cursor = dates[0];
-  for (let i = 1; i < dates.length; i++) {
-    if (dates[i] === addDays(cursor, -1)) { streak++; cursor = dates[i]; } else break;
+  const dates = new Set(logs.map((l) => l.logged_date));
+  if (!dates.size) return 0;
+  const first = [...dates].sort()[0];
+  let streak = 0;
+  let missStreak = 0;
+  let cursor = first;
+  while (cursor <= today) {
+    const hasLog = dates.has(cursor);
+    if (cursor === today && !hasLog) break;
+    if (hasLog) {
+      streak++;
+      missStreak = 0;
+    } else {
+      missStreak++;
+      streak = Math.max(0, streak - 2 ** (missStreak - 1));
+    }
+    cursor = addDays(cursor, 1);
   }
   return streak;
 }
