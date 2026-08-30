@@ -5,6 +5,13 @@ import { TZ } from './config.js';
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
+/** Ajusta la altura de un textarea a su contenido (sin scroll ni corte). */
+export function autoGrow(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = `${el.scrollHeight}px`;
+}
+
 export function esc(str) {
   return String(str ?? '').replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -27,6 +34,11 @@ export function html(strings, ...values) {
 export const raw = (value) => ({ __raw: true, value: value ?? '' });
 
 export const num = (n) => new Intl.NumberFormat('es-CO').format(Number(n) || 0);
+
+/** minúsculas, sin espacios sobrantes, sin tildes — para comparar palabras del glosario */
+export function normalizeWord(str) {
+  return String(str ?? '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
 
 /* ---------- Fechas (siempre en horario de Bogotá) ---------- */
 export function todayISO() {

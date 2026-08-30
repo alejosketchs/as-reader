@@ -1,5 +1,5 @@
 // AS READER — capa de datos (Supabase + caché local)
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { SUPABASE_URL, SUPABASE_KEY, SESSION_DAYS } from './config.js';
 
 const CDNS = [
   'https://esm.sh/@supabase/supabase-js@2.45.4',
@@ -61,10 +61,23 @@ export function unwrap({ data, error }) {
 
 export const online = () => navigator.onLine;
 
-/* ---------- PERFILES (compartidos con AS HUB) ---------- */
+/* ---------- PERFILES (compartidos con AS HUB, ya no se usan desde Reader) ---------- */
 export const Profiles = {
   async list() {
     return unwrap(await sb.from('profiles').select('*').order('sort_order'));
+  },
+};
+
+/* ---------- USUARIOS PROPIOS DE READER ---------- */
+export const ReaderUsers = {
+  async list() {
+    return unwrap(await sb.from('reader_users').select('*').order('sort_order'));
+  },
+  async create(user) {
+    return unwrap(await sb.from('reader_users').insert(user).select().single());
+  },
+  async update(id, patch) {
+    return unwrap(await sb.from('reader_users').update(patch).eq('id', id).select().single());
   },
 };
 
@@ -84,9 +97,13 @@ export const Session = {
       .eq('token', token).gt('expires_at', new Date().toISOString()).limit(1));
     return rows?.[0] || null;
   },
+  /** Cada uso reinicia el conteo de 30 días (sesión "deslizante"):
+   *  mientras el dispositivo entre al menos una vez al mes, nunca vuelve a pedir PIN. */
   async touch(token) {
-    try { await sb.from('sessions').update({ last_seen: new Date().toISOString() }).eq('token', token); }
-    catch { /* no es crítico */ }
+    try {
+      const expires = new Date(Date.now() + SESSION_DAYS * 864e5).toISOString();
+      await sb.from('sessions').update({ last_seen: new Date().toISOString(), expires_at: expires }).eq('token', token);
+    } catch { /* no es crítico */ }
   },
   async close(token) {
     if (!token) return;
@@ -110,6 +127,9 @@ export const Books = {
   },
   async remove(id) {
     return unwrap(await sb.from('reader_books').delete().eq('id', id));
+  },
+  async listAll() {
+    return unwrap(await sb.from('reader_books').select('*'));
   },
 };
 
@@ -144,5 +164,55 @@ export const Unlocks = {
     return unwrap(await sb.from('reader_unlocks')
       .upsert({ profile_id: profileId, achievement_key: achievementKey }, { onConflict: 'profile_id,achievement_key' })
       .select().single());
+  },
+};
+
+/* ---------- GLOSARIO ---------- */
+export const Glossary = {
+  async listByProfile(profileId) {
+    return unwrap(await sb.from('reader_glossary').select('*')
+      .eq('profile_id', profileId)
+      .order('created_at', { ascending: false }));
+  },
+  async listAll() {
+    return unwrap(await sb.from('reader_glossary').select('*'));
+  },
+  /** Inserta una palabra nueva. Si ya existe (unique profile_id+word_normalized),
+   *  lanza un error con `.duplicate = true` en vez del error crudo de Postgres. */
+  async create(entry) {
+    const { data, error } = await sb.from('reader_glossary').insert(entry).select().single();
+    if (error) {
+      if (error.code === '23505') {
+        const dup = new Error('La palabra ya existe en el glosario');
+        dup.duplicate = true;
+        throw dup;
+      }
+      throw error;
+    }
+    return data;
+  },
+  async update(id, patch) {
+    return unwrap(await sb.from('reader_glossary').update(patch).eq('id', id).select().single());
+  },
+  async remove(id) {
+    return unwrap(await sb.from('reader_glossary').delete().eq('id', id));
+  },
+};
+
+/* ---------- CITAS Y FRASES ---------- */
+export const Quotes = {
+  async listByProfile(profileId) {
+    return unwrap(await sb.from('reader_quotes').select('*')
+      .eq('profile_id', profileId)
+      .order('created_at', { ascending: false }));
+  },
+  async create(entry) {
+    return unwrap(await sb.from('reader_quotes').insert(entry).select().single());
+  },
+  async update(id, patch) {
+    return unwrap(await sb.from('reader_quotes').update(patch).eq('id', id).select().single());
+  },
+  async remove(id) {
+    return unwrap(await sb.from('reader_quotes').delete().eq('id', id));
   },
 };
