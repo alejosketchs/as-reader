@@ -438,3 +438,14 @@ main{padding-bottom:40px;position:relative;z-index:1}
 .sticky-wrap{padding-left:16px}
 .notebook::before{left:24px}
 }
+
+/* ---------- Notificaciones (Ajustes) ---------- */
+.pushRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pushChip{display:grid;justify-items:center;gap:3px;padding:12px 8px;background:#fff;color:var(--ink);
+  border-radius:8px;box-shadow:var(--shadow-lift);text-align:center;font:700 11.5px var(--sans);
+  transition:transform .12s,box-shadow .12s}
+.pushChip span{font-size:19px;line-height:1}
+.pushChip b{font-weight:900}
+.pushChip i{font-style:normal;font-size:10px;opacity:.6}
+.pushChip:active{transform:translateY(2px)}
+.pushChip.is-on{background:var(--paper);box-shadow:0 0 0 2.5px var(--pink),var(--shadow-lift)}

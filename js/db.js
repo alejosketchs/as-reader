@@ -216,3 +216,22 @@ export const Quotes = {
     return unwrap(await sb.from('reader_quotes').delete().eq('id', id));
   },
 };
+
+/* ---------- SUSCRIPCIONES DE NOTIFICACIONES (Web Push) ---------- */
+export const PushSubs = {
+  async find(endpoint) {
+    const rows = unwrap(await sb.from('reader_push_subs').select('*').eq('endpoint', endpoint).limit(1));
+    return rows?.[0] || null;
+  },
+  async save(row) {
+    return unwrap(await sb.from('reader_push_subs')
+      .upsert(row, { onConflict: 'endpoint' })
+      .select().single());
+  },
+  async update(endpoint, patch) {
+    return unwrap(await sb.from('reader_push_subs').update(patch).eq('endpoint', endpoint).select().single());
+  },
+  async remove(endpoint) {
+    return unwrap(await sb.from('reader_push_subs').delete().eq('endpoint', endpoint));
+  },
+};

@@ -1,0 +1,10 @@
+{
+  "name": "as-reader",
+  "private": true,
+  "version": "1.5.0",
+  "type": "module",
+  "description": "AS Reader — tracker de lectura (sitio estático + funciones serverless en /api).",
+  "dependencies": {
+    "web-push": "^3.6.7"
+  }
+}

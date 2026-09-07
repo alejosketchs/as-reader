@@ -5,6 +5,7 @@ import { Books, Logs, Unlocks, ReaderUsers, Glossary, Quotes } from './db.js';
 import { APP_VERSION, BUILD_DATE, ACHIEVEMENTS, titleForLevel, levelRequirement, levelTableRows, quoteOfDay } from './config.js';
 import { PALETTES, applyPalette, validPalette } from './theme.js';
 import { initInstall, handleInstallClick } from './install.js';
+import { pushState, enablePush, disablePush, setPushPrefs, sendTestPush } from './push.js';
 
 const HUB_URL = 'https://as-hub-orpin.vercel.app/';
 const TABS = ['inicio', 'glosario', 'comunidad'];
@@ -1208,6 +1209,12 @@ function openSettingsSheet(profile) {
               </button>`).join(''))}
           </div>
         </div>
+      </details>
+      <details class="setSection">
+        <summary class="setLabel">NOTIFICACIONES</summary>
+        <div class="setBody" id="stPushBody">
+          <p class="sheetText">Cargando…</p>
+        </div>
       </details>`,
     actions: [
       { label: 'Cerrar sesión', variant: 'danger', onClick: async ({ close }) => { await cerrarSesion(); close(); location.reload(); } },
@@ -1255,8 +1262,98 @@ function openSettingsSheet(profile) {
           actualizarPerfilActivo({ palette: id });
         } catch { toast('No se pudo guardar la paleta', 'err'); }
       });
+
+      mountPushSettings($('#stPushBody', r), profile);
     },
   });
+}
+
+/* ---------------- notificaciones (recordatorios de lectura) ---------------- */
+
+function pushSettingsMarkup(state) {
+  if (!state.available) {
+    return html`
+      <p class="sheetText">${state.reason}</p>
+      <p class="sheetText"><small>Los recordatorios llegan a las 8:00 a. m. y a las 8:00 p. m., y solo los días en que aún no has registrado páginas.</small></p>`;
+  }
+
+  if (!state.subscribed) {
+    return html`
+      <p class="sheetText">Un empujón diario para que no se te pase leer. Con frases que no te van a gustar, pero funcionan.</p>
+      <button class="btn btn--primary btn--block" id="stPushOn" type="button">Activar recordatorios</button>
+      <p class="sheetText"><small>Solo llegan si ese día todavía no registraste páginas.</small></p>`;
+  }
+
+  return html`
+    <div class="pushRow">
+      <button type="button" class="pushChip ${state.morning ? 'is-on' : ''}" data-slot="morning">
+        <span>🌅</span><b>Mañana</b><i>8:00 a. m.</i>
+      </button>
+      <button type="button" class="pushChip ${state.night ? 'is-on' : ''}" data-slot="night">
+        <span>🌙</span><b>Noche</b><i>8:00 p. m.</i>
+      </button>
+    </div>
+    <button class="btn btn--block" id="stPushTest" type="button">Enviar prueba ahora</button>
+    <button class="btn btn--block" id="stPushOff" type="button">Desactivar en este dispositivo</button>
+    <p class="sheetText"><small>La configuración es por dispositivo: si quieres avisos en el celular y en el PC, actívalos en cada uno.</small></p>`;
+}
+
+async function mountPushSettings(box, profile) {
+  if (!box) return;
+  let state = await pushState();
+
+  const paint = () => {
+    box.innerHTML = pushSettingsMarkup(state);
+    wire();
+  };
+
+  const wire = () => {
+    $('#stPushOn', box)?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.textContent = 'Pidiendo permiso…';
+      try {
+        state = await enablePush(profile.id);
+        toast('Recordatorios activados');
+      } catch (err) {
+        toast(err?.message || 'No se pudieron activar', 'err');
+        state = await pushState();
+      }
+      paint();
+    });
+
+    $('#stPushOff', box)?.addEventListener('click', async () => {
+      try {
+        await disablePush();
+        toast('Recordatorios desactivados');
+      } catch { toast('No se pudo desactivar', 'err'); }
+      state = await pushState();
+      paint();
+    });
+
+    $('#stPushTest', box)?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+      try {
+        await sendTestPush(profile.id);
+        toast('Prueba enviada — revisa tus notificaciones');
+      } catch (err) { toast(err?.message || 'No se pudo enviar', 'err'); }
+      btn.disabled = false;
+      btn.textContent = 'Enviar prueba ahora';
+    });
+
+    $$('.pushChip', box).forEach((chip) => chip.addEventListener('click', async () => {
+      const key = chip.dataset.slot;
+      const next = { morning: state.morning, night: state.night, [key]: !state[key] };
+      if (!next.morning && !next.night) return toast('Deja al menos un horario activo', 'err');
+      chip.classList.toggle('is-on', next[key]);
+      state = { ...state, ...next };
+      try { await setPushPrefs(next); } catch { toast('No se pudo guardar el horario', 'err'); }
+    }));
+  };
+
+  paint();
 }
 
 async function boot() {
