@@ -948,7 +948,9 @@ export async function render(root, perfil) {
     if (!Number.isFinite(page) || page <= book.current_page) {
       return toast(`Escribe una página mayor a ${book.current_page}`, 'err');
     }
-    if (page > book.total_pages) page = book.total_pages;
+    if (page > book.total_pages) {
+      return toast(`El libro tiene ${book.total_pages} páginas. Escribe la página donde vas (máx. ${book.total_pages}).`, 'err');
+    }
     const delta = page - book.current_page;
     try {
       await Logs.create({
