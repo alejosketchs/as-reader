@@ -4,6 +4,7 @@
 // iOS solo permite esto si la app está instalada en la pantalla de inicio (iOS 16.4+).
 import { VAPID_PUBLIC_KEY } from './config.js';
 import { PushSubs } from './db.js';
+import { authHeader } from './supabase.js';
 
 export function pushSupported() {
   return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
@@ -127,7 +128,7 @@ export async function setPushPrefs({ morning, night }) {
 export async function sendTestPush(profileId) {
   const res = await fetch('/api/push-test', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...(await authHeader()) },
     body: JSON.stringify({ profile_id: profileId }),
   });
   const data = await res.json().catch(() => ({}));

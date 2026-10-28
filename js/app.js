@@ -1,6 +1,7 @@
 // AS READER — arranque y lógica de la app (3 pestañas: Inicio · Glosario · Comunidad)
 import { $, $$, html, raw, esc, num, todayISO, addDays, fmtDate, pct, sheet, confirmSheet, toast, buildDate, normalizeWord, autoGrow } from './ui.js';
-import { requireSession, perfilActivo, linkConSesion, cerrarSesion, actualizarPerfilActivo, hashPin } from './session.js';
+import { authHeader } from './supabase.js';
+import { requireSession, perfilActivo, cerrarSesion, actualizarPerfilActivo, hashPin } from './session.js';
 import { Books, Logs, Unlocks, ReaderUsers, Glossary, Quotes } from './db.js';
 import { APP_VERSION, BUILD_DATE, ACHIEVEMENTS, titleForLevel, levelRequirement, levelTableRows, quoteOfDay } from './config.js';
 import { PALETTES, applyPalette, validPalette } from './theme.js';
@@ -131,7 +132,7 @@ function bookCard(book, today) {
 function shell() {
   return html`
     <section class="rHead">
-      <a class="rBack" href="${linkConSesion(HUB_URL)}">← AS HUB</a>
+      <a class="rBack" href="${HUB_URL}">← AS HUB</a>
       <h1 class="display">LEE. AVANZA.<em>SUBE DE NIVEL.</em></h1>
       <p>Cada página suma XP permanente y puntos para la season. Tu progreso no se reinicia; la competencia sí empieza de nuevo cada mes.</p>
     </section>
@@ -817,7 +818,7 @@ export async function render(root, perfil) {
     let suggestion = '';
     try {
       const res = await fetch('/api/define', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json', ...(await authHeader()) },
         body: JSON.stringify({ word: wordRaw, context: book ? book.title : '' }),
       });
       if (res.ok) { const data = await res.json(); suggestion = data.definition || ''; }

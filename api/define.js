@@ -3,6 +3,8 @@
 // Si algo falla (sin key, sin cuota, sin red) responde definition:'' y el cliente
 // deja que el usuario la escriba a mano — el glosario nunca se bloquea por esto.
 
+import { isOwnerRequest } from '../lib/auth.js';
+
 const MODEL = 'gemini-3.6-flash';
 
 /* Da más margen a la función serverless: Gemini a veces tarda más de los
@@ -13,6 +15,12 @@ export const config = { maxDuration: 30 };
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ definition: '' });
+    return;
+  }
+
+  // Solo el dueño con sesión gasta la cuota de Gemini.
+  if (!(await isOwnerRequest(req))) {
+    res.status(401).json({ definition: '' });
     return;
   }
 

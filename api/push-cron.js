@@ -8,7 +8,8 @@ export const config = { maxDuration: 60 };
 
 export default async function handler(req, res) {
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.authorization !== `Bearer ${secret}`) {
+  // Sin CRON_SECRET configurado no se corre: la función usa la llave secreta.
+  if (!secret || req.headers.authorization !== `Bearer ${secret}`) {
     res.status(401).json({ ok: false, error: 'no autorizado' });
     return;
   }

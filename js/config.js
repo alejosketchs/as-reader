@@ -3,13 +3,15 @@ export const SUPABASE_URL = 'https://derzetuipyugmrjaxcyu.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_XC5v-_UBfrsnbTLIJPqe6w_xXz3tCA6';
 
 export const TZ = 'America/Bogota';
-export const APP_VERSION = '1.5.0';
+export const APP_VERSION = '1.6.0';
 export const BUILD_DATE = '2026-09-06';
 
-/* Sesión compartida por todo el Suite: mismo esquema que AS HUB,
-   así el PIN y el token de sesión funcionan igual en ambos sitios. */
-export const SESSION_KEY = 'assuite:token';
-export const SESSION_DAYS = 30;
+/* Sesión real: Supabase Auth con la misma cuenta de AS HUB (cada sitio la
+   guarda en su propio navegador; la primera vez se entra con el correo). */
+export const AUTH_STORAGE_KEY = 'assuite:auth';
+
+/* PIN = bloqueo rápido local por lector; no es la seguridad de la base. */
+export const PIN_DAYS = 30;
 export const PIN_SALT = 'as-suite';
 
 /* Llave pública VAPID de los recordatorios push. Es pública por diseño:
