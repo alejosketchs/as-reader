@@ -130,7 +130,26 @@ function pintarNuevoUsuario(box) {
 
 const mensaje = (texto) => { const m = $('#gateMsg'); if (m) m.textContent = texto; };
 
-export function requireSession() {
+/** App abierta: sin cuenta ni PIN. Siempre entra el primer lector (Alejo). */
+export async function requireSession() {
+  let perfiles = [];
+  try { perfiles = await ReaderUsers.list(); } catch { /* sin red: se usa el caché */ }
+  const profile = perfiles[0] || leerPerfilCache();
+  const gate = $('#gate');
+  if (!profile) {
+    gate.classList.remove('hide');
+    $('#gateBox').innerHTML = html`<p class="gateHint">No se pudo cargar la app. Revisa tu conexión y recarga.</p>`;
+    return new Promise(() => {});
+  }
+  actual = { user: null, profile };
+  guardarPerfilCache(profile);
+  applyPalette(profile.palette);
+  gate.classList.add('hide');
+  return actual;
+}
+
+// Entrada con cuenta + PIN (modo anterior). Ya no se usa; queda por si se vuelve a cerrar la app.
+export function requireSessionConLogin() {
   return new Promise((resolve) => {
     const gate = $('#gate');
     const box = $('#gateBox');

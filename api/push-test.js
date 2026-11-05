@@ -2,7 +2,6 @@
 // a los dispositivos del perfil, sin importar si ya leyó hoy.
 
 import { runSlot } from '../lib/push-core.js';
-import { isOwnerRequest } from '../lib/auth.js';
 
 export const config = { maxDuration: 30 };
 
@@ -12,10 +11,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!(await isOwnerRequest(req))) {
-    res.status(401).json({ ok: false, error: 'no autorizado' });
-    return;
-  }
+  // App abierta (sin login): sin comprobación de dueño.
 
   const profileId = (req.body?.profile_id || '').toString().trim().slice(0, 60);
   if (!profileId) {

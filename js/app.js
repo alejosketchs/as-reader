@@ -1219,9 +1219,7 @@ function openSettingsSheet(profile) {
           <p class="sheetText">Cargando…</p>
         </div>
       </details>`,
-    actions: [
-      { label: 'Cerrar sesión', variant: 'danger', onClick: async ({ close }) => { await cerrarSesion(); close(); location.reload(); } },
-    ],
+    actions: [],
     onOpen: ({ root: r }) => {
       $('#stSaveProfile', r).addEventListener('click', async () => {
         const name = $('#stName', r).value.trim();
