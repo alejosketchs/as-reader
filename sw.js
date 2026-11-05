@@ -2,11 +2,12 @@
    El "shell" se guarda en caché para abrir sin conexión;
    las peticiones a Supabase nunca se cachean (siempre datos frescos).
    También recibe los recordatorios de lectura (Web Push). */
-const VERSION = 'asreader-v1.6.0';
+const VERSION = 'asreader-v1.7.0';
 const SHELL = [
   '/',
   '/index.html',
   '/css/app.css',
+  '/css/lomo.css',
   '/js/app.js',
   '/js/config.js',
   '/js/supabase.js',

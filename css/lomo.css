@@ -1,0 +1,114 @@
+/* AS READER — tema "Lomo y marcapáginas": papel de imprenta, tinta azul-negra, un solo acento bermellón */
+:root,:root[data-palette]{
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --hand:'Fraunces',Georgia,serif;
+  --mono:'Inter',system-ui,sans-serif;
+  --bg:#EFE9DC;--bg-soft:#E4DDCB;
+  --ink:#1B2433;--ink-soft:#3b4658;--muted:#5b6475;
+  --text:#1B2433;
+  --cream:#F7F3E9;--paper:#F7F3E9;--paper-2:#EDE6D3;--paper-3:#D9D1BC;--paper-edge:#CFC6AE;
+  --wood:#EFE9DC;--wood-dark:#EFE9DC;--wood-deep:#1B2433;
+  --lime:#1B2433;--lime-deep:#1B2433;
+  --pink:#C8372D;--blue:#6B7A8F;--purple:#8a94a6;--yellow:#E8DDBA;--brand:#1B2433;--red:#C8372D;
+  --paper-shadow:rgba(27,36,51,.28);
+  --shadow:0 1px 0 rgba(27,36,51,.08),0 8px 18px -12px rgba(27,36,51,.35);
+  --shadow-sm:0 1px 0 rgba(27,36,51,.08),0 5px 12px -9px rgba(27,36,51,.35);
+  --shadow-lift:0 1px 0 rgba(27,36,51,.1);
+  --radius:3px}
+body{background:#EFE9DC;background-image:none;color:var(--ink)}
+body::before,body::after{display:none}
+.topbar{background:rgba(239,233,220,.92);border-bottom:1px solid var(--paper-edge)}
+.brandBubble{border-radius:2px;background:var(--ink);color:var(--paper);font-family:var(--display)}
+.brandWords b{font-weight:700}
+.brandWords i{color:var(--pink);transform:none;font-style:italic;font-weight:500}
+.pill{background:transparent;box-shadow:none;border:1px solid var(--paper-edge);text-transform:none;letter-spacing:0;font-weight:500}
+.btnInstall{background:var(--ink);letter-spacing:0;text-transform:none}
+.whoBtn{background:var(--paper);border:1px solid var(--paper-edge);box-shadow:none}
+/* encabezados: sin cinta adhesiva ni sombras de cartón */
+.rHead{background:var(--paper);border:1px solid var(--paper-edge);border-top:4px solid var(--ink);box-shadow:none;border-radius:2px}
+.rHead::before,.rHead::after{display:none}
+.tag{background:var(--ink);box-shadow:none;border-radius:2px;letter-spacing:0;font-weight:500;text-transform:none;font-size:11px}
+.tag--blue,.tag--lime,.tag--purple{background:var(--ink);color:var(--paper)}
+.display{font-weight:700;letter-spacing:-.01em;line-height:1.02}
+.display em{font-style:italic;color:var(--pink);-webkit-text-stroke:0;font-weight:500}
+.card,.paper,.bookCard,.communityRow,.seasonRow,.levelRow,.glossCard,.glossFicha,.folderCard,.logRow,.achCard,.sheet,.gateBox,.userSummary,.streak-card{
+  border:1px solid var(--paper-edge);box-shadow:none;border-radius:2px}
+.secTitle,.field>label,.stat-line span,.logDate,.bookMeta,.setLabel,.gateStep,.seasonHead,.levelHead,.profileStat span,.communityLevel{
+  text-transform:none;letter-spacing:0;font-weight:500;font-size:12px;font-family:var(--sans)}
+.secTitle{font:700 18px var(--display);color:var(--ink)}
+/* cuaderno de hoy: renglones suaves, margen bermellón */
+.notebook{background:var(--paper);background-image:repeating-linear-gradient(var(--paper) 0 30px,#E2DAC4 30px 31px);border:1px solid var(--paper-edge);box-shadow:none;border-radius:2px}
+.notebook::before{background:var(--pink);opacity:.5}
+.goal-card{background:var(--ink);color:var(--paper);box-shadow:none;border-radius:2px}
+.goal-card--done{background:var(--paper-2);color:var(--ink);border:1px solid var(--ink)}
+.streak-card{background:var(--paper-2)}
+.streak-track,.bar{height:6px;border-radius:0;box-shadow:none;background:var(--paper-3)}
+.streak-fill,.bar i{background:var(--pink);border-radius:0}
+/* nota adhesiva → cita impresa */
+.sticky{background:var(--paper-2);box-shadow:none;border-left:3px solid var(--pink);border-radius:0}
+.sticky::before{display:none}
+.sticky p{font-style:italic;font-weight:500;font-size:18px}
+.xp-ring{background:conic-gradient(var(--pink) calc(var(--pct)*1%),var(--paper-3) 0)}
+.passport-id .title-role{font-style:italic;color:var(--pink);font-weight:500}
+/* formularios y botones */
+.input,.select,.textarea{background:#fff;border:1px solid var(--paper-edge);border-radius:2px;font-weight:500}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(200,55,45,.25)}
+.btn{background:var(--paper);color:var(--ink);border:1px solid var(--ink);box-shadow:none;border-radius:2px;letter-spacing:0;text-transform:none;font-size:13px;font-weight:500}
+.btn--primary{background:var(--ink);color:var(--paper)}
+.btn--danger{background:var(--pink);border-color:var(--pink);color:#fff}
+.empty{border:1px dashed var(--paper-edge)}
+/* ESTANTE: lomos de tinta con un lomo bermellón */
+.shelf{background:none;padding:18px 4px 0;gap:5px;border-bottom:0}
+.spine{width:32px;border-radius:2px 2px 0 0;box-shadow:none;background:var(--ink)!important;color:var(--paper)}
+.spine:nth-child(5n+1){height:150px}
+.spine:nth-child(5n+2){height:128px;width:38px;background:var(--pink)!important}
+.spine:nth-child(5n+3){height:110px;background:var(--blue)!important}
+.spine:nth-child(5n+4){height:138px}
+.spine:nth-child(5n){height:96px;background:#b9b1a0!important}
+.spine:nth-child(5n) span{color:var(--ink)}
+.spine span{color:var(--paper);text-shadow:none;font-weight:500;font-size:12px}
+.shelf-board{height:5px;background:var(--ink);border-radius:0;box-shadow:none}
+.bookCard:hover{transform:none;border-color:var(--ink)}
+.bookCover{background:var(--paper-2);border-radius:1px}
+.bookCover::after{display:none}
+.bookPct{color:var(--pink)}
+/* bitácora */
+.logList::before{display:none}
+.logList{padding-top:0}
+.logRow{background:var(--paper);background-image:none}
+.logRow::before{background:var(--pink);opacity:.5}
+.logXp{color:var(--pink)}
+/* logros: sellos sobre papel, sin corcho */
+.achGrid{background:var(--paper-2);box-shadow:none;border:1px solid var(--paper-edge);border-radius:2px}
+.achCard{border-radius:2px;background:var(--paper);filter:grayscale(1)}
+.achCard::before{display:none}
+.achCard.is-on{animation:none;background:var(--paper);border-color:var(--pink);filter:none}
+/* listas */
+.seasonRow.is-me,.communityRow.is-me{background:var(--paper-2);border-color:var(--ink);border-left:4px solid var(--pink)}
+.communityRow{border-left:1px solid var(--paper-edge)}
+.communityRow::before,.communityRow::after{display:none}
+.glossCard:nth-child(n){transform:none}
+.glossCard:hover,.folderCard:hover{transform:none;border-color:var(--ink)}
+.glossCard::before,.glossFicha::before{background:var(--pink);opacity:.5}
+.glossMore{color:var(--pink)}
+/* pestañas */
+.tabBtn{background:var(--paper-2);color:var(--muted);border-radius:2px 2px 0 0;letter-spacing:0;font-weight:500;font-size:13px;transform:none;border:1px solid var(--paper-edge);border-bottom:0}
+.tabBtn.is-on{background:var(--paper);color:var(--ink);box-shadow:inset 0 3px 0 var(--pink)}
+/* hojas, avisos, entrada */
+.sheetBack{background:rgba(27,36,51,.55);backdrop-filter:none}
+.sheetHead{background:var(--paper-2)}
+.toast{background:var(--ink);color:var(--paper);border-radius:2px;box-shadow:none}
+.toast--info{background:var(--ink);color:var(--paper)}
+.gate{background:#EFE9DC;background-image:none}
+.gateProfile{background:var(--paper);border:1px solid var(--paper-edge);box-shadow:none;clip-path:none;border-radius:2px}
+.gateProfile:hover{border-color:var(--ink);transform:none}
+.gateDots i{border-color:var(--ink)}
+.gateDots i.on{background:var(--pink);border-color:var(--pink)}
+.gateKeys button{border:1px solid var(--paper-edge);border-radius:2px;box-shadow:none}
+.gateNewUser,.gateKeySoft{border-color:var(--paper-edge)!important}
+.hubFoot{border-top:1px solid var(--paper-edge)}
+.hubFootMeta b{color:var(--pink)}
+.paletteChip,.pushChip{border:1px solid var(--paper-edge);box-shadow:none;border-radius:2px}
+.paletteChip.is-on,.pushChip.is-on{box-shadow:none;border-color:var(--pink);background:var(--paper-2)}
+:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
